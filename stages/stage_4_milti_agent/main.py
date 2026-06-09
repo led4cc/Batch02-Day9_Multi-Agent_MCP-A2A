@@ -4,7 +4,7 @@ Multiple specialised agents collaborate on a complex legal question.
 This mirrors Stage 5's architecture (law_agent/graph.py) but runs
 entirely in-process — no HTTP, no A2A protocol, no separate servers.
 
-Graph: analyze_law -> check_routing -> parallel [call_tax, call_compliance] -> aggregate -> END
+Graph: analyze_law -> check_routing -> parallel [call_tax, call_compliance, privacy] -> aggregate -> END
 """
 
 import asyncio
@@ -13,6 +13,10 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -94,13 +98,14 @@ def search_compliance_law(query: str) -> str:
     return "\n\n".join(results) if results else "No specific compliance matches found."
 
 
+
 # ---------------------------------------------------------------------------
 # State definition (mirrors law_agent/graph.py)
 # ---------------------------------------------------------------------------
 
 from typing import Annotated, TypedDict
 
-from langgraph.constants import Send
+from langgraph.types import Send
 from langgraph.graph import END, StateGraph
 
 
@@ -114,8 +119,10 @@ class LegalState(TypedDict):
     law_analysis: str
     needs_tax: bool
     needs_compliance: bool
+    needs_privacy: bool
     tax_result: Annotated[str, _last_wins]
     compliance_result: Annotated[str, _last_wins]
+    privacy_result: Annotated[str, _last_wins]
     final_answer: str
 
 
@@ -152,9 +159,12 @@ async def check_routing(state: LegalState) -> dict:
                 'You are a legal routing expert. Based on the question, decide whether '
                 'specialist sub-agents are needed.\n'
                 'Reply with ONLY valid JSON — no markdown, no extra text:\n'
-                '{"needs_tax": <true|false>, "needs_compliance": <true|false>}\n\n'
+                '{"needs_tax": <true|false>, "needs_compliance": <true|false>, '
+                '"needs_privacy": <true|false>}\n\n'
                 'needs_tax = true  → question involves tax law, IRS, tax evasion, penalties\n'
-                'needs_compliance = true → question involves regulatory compliance, SEC, SOX, AML, FCPA'
+                'needs_compliance = true → question involves regulatory compliance, SEC, SOX, AML, FCPA\n'
+                'needs_privacy = true → question involves data, privacy, GDPR, CCPA, consent, '
+                'personal information, customer data, or data breach'
             )
         ),
         HumanMessage(content=state["question"]),
@@ -170,12 +180,24 @@ async def check_routing(state: LegalState) -> dict:
     try:
         parsed = json.loads(raw)
     except json.JSONDecodeError:
-        parsed = {"needs_tax": True, "needs_compliance": True}
+        parsed = {"needs_tax": True, "needs_compliance": True, "needs_privacy": True}
 
+    question_lower = state["question"].lower()
     needs_tax = bool(parsed.get("needs_tax", True))
     needs_compliance = bool(parsed.get("needs_compliance", True))
-    print(f"  [Node: check_routing] needs_tax={needs_tax}, needs_compliance={needs_compliance}")
-    return {"needs_tax": needs_tax, "needs_compliance": needs_compliance}
+    needs_privacy = bool(parsed.get("needs_privacy", False)) or any(
+        kw in question_lower
+        for kw in ["data", "privacy", "gdpr", "ccpa", "consent", "personal information", "customer data", "dữ liệu"]
+    )
+    print(
+        "  [Node: check_routing] "
+        f"needs_tax={needs_tax}, needs_compliance={needs_compliance}, needs_privacy={needs_privacy}"
+    )
+    return {
+        "needs_tax": needs_tax,
+        "needs_compliance": needs_compliance,
+        "needs_privacy": needs_privacy,
+    }
 
 
 def route_to_specialists(state: LegalState) -> list[Send]:
@@ -185,6 +207,8 @@ def route_to_specialists(state: LegalState) -> list[Send]:
         sends.append(Send("call_tax_specialist", state))
     if state.get("needs_compliance"):
         sends.append(Send("call_compliance_specialist", state))
+    if state.get("needs_privacy"):
+        sends.append(Send("privacy_agent", state))
     if not sends:
         sends.append(Send("aggregate", state))
     return sends
@@ -247,6 +271,8 @@ async def aggregate(state: LegalState) -> dict:
         sections.append(f"## Tax Analysis\n{state['tax_result']}")
     if state.get("compliance_result"):
         sections.append(f"## Regulatory Compliance Analysis\n{state['compliance_result']}")
+    if state.get("privacy_result"):
+        sections.append(f"## Privacy and Data Protection Analysis\n{state['privacy_result']}")
 
     combined = "\n\n---\n\n".join(sections)
 
@@ -266,6 +292,25 @@ async def aggregate(state: LegalState) -> dict:
     return {"final_answer": result.content}
 
 
+async def privacy_agent(state: LegalState) -> dict:
+    """Agent chuyên về luật bảo vệ dữ liệu cá nhân."""
+    print("\n  [Node: privacy_agent] Privacy specialist agent starting...")
+    llm = get_llm()
+
+    prompt = f"""Bạn là chuyên gia về GDPR và luật bảo vệ dữ liệu cá nhân.
+
+            Câu hỏi gốc: {state['question']}
+            Phân tích pháp lý: {state.get('law_analysis', 'N/A')}
+
+            Hãy phân tích các vấn đề về privacy và GDPR (nếu có).
+            """
+
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
+    print(f"  [Node: privacy_agent] Done ({len(response.content)} chars)")
+    return {"privacy_result": response.content}
+
+
+
 # ---------------------------------------------------------------------------
 # Graph construction (mirrors law_agent/graph.py topology)
 # ---------------------------------------------------------------------------
@@ -278,6 +323,7 @@ def create_graph():
     graph.add_node("check_routing", check_routing)
     graph.add_node("call_tax_specialist", call_tax_specialist)
     graph.add_node("call_compliance_specialist", call_compliance_specialist)
+    graph.add_node("privacy_agent", privacy_agent)
     graph.add_node("aggregate", aggregate)
 
     graph.set_entry_point("analyze_law")
@@ -285,16 +331,20 @@ def create_graph():
     graph.add_conditional_edges(
         "check_routing",
         route_to_specialists,
-        ["call_tax_specialist", "call_compliance_specialist", "aggregate"],
+        ["call_tax_specialist", "call_compliance_specialist", "privacy_agent", "aggregate"],
     )
     graph.add_edge("call_tax_specialist", "aggregate")
     graph.add_edge("call_compliance_specialist", "aggregate")
+    graph.add_edge("privacy_agent", "aggregate")
     graph.add_edge("aggregate", END)
 
     return graph.compile()
 
 
-QUESTION = "If a company breaks a contract and avoids taxes, what are the legal and regulatory consequences?"
+QUESTION = (
+    "If a company breaks a contract, avoids taxes, and leaks customer data, "
+    "what are the legal, tax, regulatory, and privacy consequences?"
+)
 
 
 async def main():
@@ -305,11 +355,11 @@ async def main():
     print("[How it works]")
     print("  1. Lead attorney agent analyses the question")
     print("  2. Router decides which specialist agents are needed")
-    print("  3. Tax + Compliance specialists run IN PARALLEL (LangGraph Send API)")
+    print("  3. Tax + Compliance + Privacy specialists run IN PARALLEL (LangGraph Send API)")
     print("  4. Aggregator combines all analyses into a final answer")
     print()
     print("[Graph topology]")
-    print("  analyze_law -> check_routing -> [call_tax + call_compliance] -> aggregate -> END")
+    print("  analyze_law -> check_routing -> [call_tax + call_compliance + privacy] -> aggregate -> END")
     print()
     print(f"Question: {QUESTION}")
     print("-" * 70)
@@ -321,8 +371,10 @@ async def main():
         "law_analysis": "",
         "needs_tax": False,
         "needs_compliance": False,
+        "needs_privacy": False,
         "tax_result": "",
         "compliance_result": "",
+        "privacy_result": "",
         "final_answer": "",
     })
 
@@ -335,7 +387,7 @@ async def main():
     print("-" * 70)
     print("[Improvements over Stage 3]")
     print("  + Specialisation: each agent has domain-specific expertise")
-    print("  + Parallel execution: tax + compliance agents run concurrently")
+    print("  + Parallel execution: tax + compliance + privacy agents run concurrently")
     print("  + Better quality: specialist prompts produce deeper analysis")
     print("  + Structured flow: explicit graph topology with routing logic")
     print()
@@ -361,3 +413,12 @@ async def main():
 if __name__ == "__main__":
     load_dotenv()
     asyncio.run(main())
+
+    if os.getenv("DRAW_STAGE4_GRAPH") == "1":
+        try:
+            from IPython.display import Image, display
+        except ImportError:
+            print("Install IPython to display the graph image.")
+        else:
+            graph = create_graph()
+            display(Image(graph.get_graph().draw_mermaid_png()))

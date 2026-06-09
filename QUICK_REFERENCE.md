@@ -10,6 +10,7 @@ uv sync
 # Copy environment file
 cp .env.example .env
 # Sau đó sửa .env, thêm OPENROUTER_API_KEY
+# Nếu gặp OpenRouter 402, giảm OPENROUTER_MAX_TOKENS xuống 512 hoặc nạp thêm credit
 ```
 
 ### Chạy Stages (Standalone)

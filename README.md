@@ -197,9 +197,12 @@ Each agent module follows the same structure:
 |---|---|---|
 | `OPENROUTER_API_KEY` | Your OpenRouter API key | (required) |
 | `OPENROUTER_MODEL` | Model identifier | `anthropic/claude-sonnet-4-5` |
+| `OPENROUTER_MAX_TOKENS` | Maximum output tokens per LLM response | `1000` |
 | `REGISTRY_URL` | Registry service URL | `http://localhost:10000` |
 
 The model is swappable to any OpenRouter-supported model (e.g., `openai/gpt-4o`, `google/gemini-2.0-flash`).
+
+If OpenRouter returns `402` with a message like `requested up to 64000 tokens`, the API key is working but the request is too expensive for the account's current credits. Lower `OPENROUTER_MAX_TOKENS` (for example, `512`) or add credits in OpenRouter.
 
 ## Documentation Diagrams
 
