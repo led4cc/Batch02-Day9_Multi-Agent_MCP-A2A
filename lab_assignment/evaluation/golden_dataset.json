@@ -1,0 +1,77 @@
+[
+  {
+    "question": "Luat Phong chong ma tuy 2021 quy dinh pham vi dieu chinh nhu the nao?",
+    "expected_answer": "Luat quy dinh ve phong, chong ma tuy, quan ly nguoi su dung trai phep chat ma tuy, cai nghien ma tuy, quan ly sau cai nghien va trach nhiem cua co quan, to chuc, ca nhan.",
+    "expected_context": "Luat-73-2021-QH14.md"
+  },
+  {
+    "question": "Nhung hinh thuc cai nghien ma tuy nao duoc quy dinh trong Luat Phong chong ma tuy?",
+    "expected_answer": "Cai nghien ma tuy co hinh thuc tu nguyen va bat buoc; nguoi cai nghien co the cai nghien tai gia dinh, cong dong, co so cai nghien hoac co so cai nghien bat buoc theo quy dinh.",
+    "expected_context": "Luat-73-2021-QH14.md"
+  },
+  {
+    "question": "Nguoi su dung trai phep chat ma tuy co the bi quan ly nhu the nao?",
+    "expected_answer": "Nguoi su dung trai phep chat ma tuy co the bi xac dinh tinh trang nghien, lap ho so quan ly va ap dung cac bien phap quan ly, tu van, giao duc theo quy dinh.",
+    "expected_context": "Luat-73-2021-QH14.md"
+  },
+  {
+    "question": "Co quan nao co trach nhiem phong chong ma tuy trong nha truong?",
+    "expected_answer": "Co quan, to chuc, nha truong va gia dinh co trach nhiem tuyen truyen, giao duc, phong ngua viec su dung trai phep chat ma tuy.",
+    "expected_context": "Luat-73-2021-QH14.md"
+  },
+  {
+    "question": "Cac hanh vi nao bi nghiem cam lien quan den ma tuy?",
+    "expected_answer": "Cac hanh vi bi nghiem cam gom trong, san xuat, mua ban, van chuyen, tang tru, su dung trai phep chat ma tuy va loi keo, cuong buc nguoi khac su dung trai phep chat ma tuy.",
+    "expected_context": "Luat-73-2021-QH14.md"
+  },
+  {
+    "question": "Kinh phi cho hoat dong cai nghien ma tuy duoc de cap nhu the nao?",
+    "expected_answer": "Kinh phi cho hoat dong cai nghien ma tuy duoc bao dam theo quy dinh phap luat va tuy truong hop co the do ngan sach nha nuoc, ca nhan, gia dinh hoac nguon hop phap khac chi tra.",
+    "expected_context": "Luat-73-2021-QH14.md"
+  },
+  {
+    "question": "Quan ly sau cai nghien ma tuy nham muc dich gi?",
+    "expected_answer": "Quan ly sau cai nghien nham ho tro nguoi da cai nghien phong ngua tai nghien, on dinh cuoc song va tiep tuc duoc theo doi, ho tro tai cong dong.",
+    "expected_context": "Luat-73-2021-QH14.md"
+  },
+  {
+    "question": "Nghi dinh 105/2021 de cap den van de nao trong phong chong ma tuy?",
+    "expected_answer": "Nghi dinh 105/2021 huong dan thi hanh mot so noi dung cua Luat Phong chong ma tuy, trong do co quan ly nguoi su dung trai phep chat ma tuy va cai nghien ma tuy.",
+    "expected_context": "Nghi-dinh-105-2021"
+  },
+  {
+    "question": "Nghi dinh 28/2026 lien quan den noi dung nao?",
+    "expected_answer": "Nghi dinh 28/2026 la van ban lien quan den quy dinh phap luat moi trong linh vuc phong chong ma tuy va quan ly cac noi dung thi hanh lien quan.",
+    "expected_context": "Nghi-dinh-28-2026"
+  },
+  {
+    "question": "Tin Tuoi Tre ve nghe si Viet va ma tuy noi ve van de gi?",
+    "expected_answer": "Bai viet de cap den viec mot so nghe si Viet bi anh huong nghiem trong ve su nghiep do lien quan den ma tuy.",
+    "expected_context": "article_01"
+  },
+  {
+    "question": "Chuyen gia tam ly noi gi ve viec nghe si dung ma tuy de sang tao?",
+    "expected_answer": "Chuyen gia cho rang lap luan dung ma tuy de sang tao la sai lech va tu lua doi ban than.",
+    "expected_context": "article_02"
+  },
+  {
+    "question": "Bai bao ve ca si Long Nhat va Son Ngoc Minh de cap den viec gi?",
+    "expected_answer": "Bai bao de cap den viec hai ca si bi bat hoac bi dieu tra vi lien quan den ma tuy theo thong tin bai bao.",
+    "expected_context": "article_03"
+  },
+  {
+    "question": "Ca si Long Nhat khai gi ve viec su dung ma tuy?",
+    "expected_answer": "Bai bao cho biet ca si Long Nhat khai su dung ma tuy da cung quan ly.",
+    "expected_context": "article_04"
+  },
+  {
+    "question": "Bai ve G-Dragon va Lee Sun Kyun noi ve chu de nao?",
+    "expected_answer": "Bai viet noi ve cac vu viec sao Han dinh nghi van hoac lien quan den ma tuy va tac dong cua chung.",
+    "expected_context": "article_05"
+  },
+  {
+    "question": "Pipeline RAG nen dung source documents nhu the nao khi tra loi?",
+    "expected_answer": "Pipeline can dua ra cau tra loi dua tren context truy xuat va hien thi citation hoac source documents da dung.",
+    "expected_context": "standardized"
+  }
+]
