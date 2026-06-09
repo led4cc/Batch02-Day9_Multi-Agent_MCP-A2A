@@ -424,4 +424,11 @@ Nếu gặp vấn đề:
 
 ---
 
+## **Bài Tập Cộng Điểm:**
+
+1. Vite Code HTML File Để demo các tương tác của các Agent ở stage 4 hoặc stage 5
+2. Sau khi chạy full Stage 5 (test_client.py) trả lời 2 câu hỏi:
+- Latency (Tổng thời gian trả lời 1 câu hỏi của hệ thống) là bao nhiêu giây?
+- Đề xuất phương án giảm latency và demo + show thời gian xử lý đã giảm được khi apply phương án?
+
 **Chúc các bạn học tốt! 🚀**
