@@ -4,16 +4,27 @@ version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
     "a2a-sdk[http-server]>=0.3.0,<1.0",
+    "crawl4ai>=0.3.0",
+    "deepeval>=1.0.0",
     "langgraph>=0.4.1",
     "langchain-openai>=0.3.0",
     "langchain-core>=0.3.0",
+    "langchain-text-splitters>=0.2.0",
     "fastapi>=0.115.0",
+    "markitdown>=0.1.0",
+    "pageindex>=0.1.0",
     "uvicorn>=0.34.0",
     "httpx>=0.28.0",
+    "rank-bm25>=0.2.2",
+    "requests>=2.31.0",
+    "sentence-transformers>=2.2.0",
+    "streamlit>=1.35.0",
+    "transformers>=4.40.0",
     "python-dotenv>=1.1.0",
     "pydantic>=2.11.0",
     "python-pptx>=1.0.2",
     "cairosvg>=2.9.0",
+    "weaviate-client>=4.5.0",
 ]
 
 [build-system]
@@ -29,4 +40,5 @@ packages = [
     "tax_agent",
     "compliance_agent",
     "stages",
+    "lab_assignment",
 ]

@@ -8,11 +8,11 @@ Local lexical-overlap evaluator. This avoids paid/cloud evaluators and runs on t
 
 | Metric | Config A: supervisor + rerank | Config B: supervisor no rerank | Delta |
 |--------|----------------------------|----------------------------|-------|
-| Faithfulness | 100.0% | 100.0% | +0.000 |
-| Answer Relevance | 77.6% | 77.6% | +0.000 |
-| Context Recall | 100.0% | 100.0% | +0.000 |
-| Context Precision | 44.6% | 44.6% | +0.000 |
-| Average | 80.5% | 80.5% | +0.000 |
+| Faithfulness | 99.6% | 99.6% | -0.000 |
+| Answer Relevance | 44.0% | 42.4% | +0.016 |
+| Context Recall | 39.1% | 41.3% | -0.022 |
+| Context Precision | 25.9% | 23.2% | +0.027 |
+| Average | 52.2% | 51.6% | +0.005 |
 
 ## A/B Comparison Analysis
 
@@ -26,9 +26,9 @@ Local lexical-overlap evaluator. This avoids paid/cloud evaluators and runs on t
 
 | # | Question | Average | Likely Root Cause |
 |---|----------|---------|-------------------|
-| 1 | Bai ve G-Dragon va Lee Sun Kyun noi ve chu de nao? | 65.8% | Query/context lexical mismatch or source text encoding noise |
-| 2 | Pipeline RAG nen dung source documents nhu the nao khi tra loi? | 70.0% | Query/context lexical mismatch or source text encoding noise |
-| 3 | Luat Phong chong ma tuy 2021 quy dinh pham vi dieu chinh nhu the nao? | 75.7% | Query/context lexical mismatch or source text encoding noise |
+| 1 | Pipeline RAG nen dung source documents nhu the nao khi tra loi? | 30.8% | Query/context lexical mismatch or source text encoding noise |
+| 2 | Nhung hinh thuc cai nghien ma tuy nao duoc quy dinh trong Luat Phong chong ma tuy? | 41.9% | Query/context lexical mismatch or source text encoding noise |
+| 3 | Kinh phi cho hoat dong cai nghien ma tuy duoc de cap nhu the nao? | 43.6% | Query/context lexical mismatch or source text encoding noise |
 
 ## Recommendations
 

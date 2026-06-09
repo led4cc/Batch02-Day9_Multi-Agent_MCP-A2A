@@ -61,7 +61,7 @@ _init_state()
 with st.sidebar:
     st.header("Settings")
     top_k = st.slider("Top K sources", min_value=1, max_value=8, value=5)
-    generation_enabled = st.toggle("Use Ollama generation", value=True)
+    generation_enabled = st.toggle("Use OpenRouter generation", value=True)
     if st.button("Clear chat"):
         st.session_state.messages = []
         st.rerun()

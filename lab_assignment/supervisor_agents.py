@@ -1,9 +1,9 @@
 """Supervisor-agent architecture for the lab assignment RAG chatbot.
 
-The module keeps the app usable even when the original `src.task9_*` and
-`src.task10_*` group-project modules are not present in this repository. If
-those modules exist, the agents delegate to them. Otherwise they fall back to a
-small local lexical retriever built from the golden dataset.
+The module keeps the app usable even when the original lab assignment task
+modules are not ready. If they import successfully, the agents delegate to them.
+Otherwise they fall back to a small local lexical retriever built from the
+golden dataset.
 """
 
 from __future__ import annotations
@@ -17,12 +17,12 @@ from typing import Any
 
 
 try:
-    from src.task9_retrieval_pipeline import retrieve as external_retrieve
+    from lab_assignment.src.task9_retrieval_pipeline import retrieve as external_retrieve
 except ImportError:
     external_retrieve = None
 
 try:
-    from src.task10_generation import generate_with_citation as external_generate
+    from lab_assignment.src.task10_generation import generate_with_citation as external_generate
 except ImportError:
     external_generate = None
 

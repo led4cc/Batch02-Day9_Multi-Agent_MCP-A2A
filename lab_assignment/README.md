@@ -8,8 +8,8 @@ Xay dung RAG chatbot tra loi cau hoi ve phap luat Viet Nam lien quan den ma tuy 
 
 - Chatbot UI bang Streamlit: `lab_assignment/app.py`
 - Supervisor agent orchestration: `lab_assignment/supervisor_agents.py`
-- Retrieval pipeline: tu dong dung `src/task9_retrieval_pipeline.py` neu co, fallback sang local lexical retrieval neu chua co `src/`
-- Generation co citation: tu dong dung `src/task10_generation.py` neu co, fallback sang deterministic answer tu source documents
+- Retrieval pipeline: tu dong dung `lab_assignment/src/task9_retrieval_pipeline.py`, fallback sang local lexical retrieval neu pipeline chua san sang
+- Generation co citation: dung OpenRouter trong `lab_assignment/src/task10_generation.py`, fallback sang deterministic answer tu source documents neu API chua san sang
 - Golden dataset 15 cau hoi: `lab_assignment/evaluation/golden_dataset.json`
 - Evaluation script: `lab_assignment/evaluation/eval_pipeline.py`
 - Evaluation report: `lab_assignment/evaluation/results.md`
@@ -27,7 +27,7 @@ Supervisor Agent
   |
   +--> Router Agent: phan loai legal/news/RAG meta question
   +--> Retrieval Agent: dung Task 9 neu co, fallback lexical retrieval neu can
-  +--> Generation Agent: dung Task 10/Ollama neu co, fallback answer tu context
+  +--> Generation Agent: dung Task 10/OpenRouter neu co, fallback answer tu context
   +--> Citation Verifier Agent: dam bao answer co source/citation
   |
   v
@@ -43,34 +43,24 @@ Chatbot dap ung yeu cau:
 - Goi SupervisorAgent de dieu phoi cac agent con
 - Co supervisor trace de debug route/retrieval/generation/citation
 - Hien thi source documents, score, retrieval source va evidence preview
-- Co che fallback neu Ollama hoac thu muc `src/` chua san sang
+- Co che fallback neu OpenRouter hoac retrieval pipeline chua san sang
 
 Chay chatbot:
 
 ```bash
-streamlit run app.py
+uv run streamlit run lab_assignment/app.py
 ```
 
-Hoac:
+## OpenRouter setup
 
-```bash
-streamlit run lab_assignment/app.py
-```
-
-## Ollama setup
-
-Task 10 khong dung OpenAI. Can chay Ollama local:
-
-```bash
-ollama pull llama3.1
-ollama serve
-```
+Task 10 dung OpenRouter qua OpenAI-compatible API. Khong can chay local LLM server.
 
 Trong `.env`:
 
 ```env
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.1
+OPENROUTER_API_KEY=your_key_here
+OPENROUTER_MODEL=openai/gpt-4o-mini
+OPENROUTER_MAX_TOKENS=1000
 ```
 
 ## Evaluation Pipeline
@@ -101,7 +91,7 @@ lab_assignment/evaluation/results.md
 
 ## Golden Dataset
 
-`group_project/evaluation/golden_dataset.json` co 15 cau hoi, bao phu:
+`lab_assignment/evaluation/golden_dataset.json` co 15 cau hoi, bao phu:
 
 - Luat Phong chong ma tuy 2021
 - Nghi dinh 105/2021
@@ -122,33 +112,27 @@ lab_assignment/evaluation/results.md
 
 ## Huong dan demo
 
-1. Cai dependencies:
+1. Cai dependencies bang uv:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 2. Tao du lieu neu can:
 
 ```bash
-python src/task2_crawl_news.py
-python src/task3_convert_markdown.py
-python src/task4_chunking_indexing.py
+uv run python lab_assignment/src/task2_crawl_news.py
+uv run python lab_assignment/src/task3_convert_markdown.py
+uv run python lab_assignment/src/task4_chunking_indexing.py
 ```
 
-3. Chay Ollama:
+3. Chay chatbot:
 
 ```bash
-ollama serve
+uv run streamlit run lab_assignment/app.py
 ```
 
-4. Chay chatbot:
-
-```bash
-streamlit run app.py
-```
-
-5. Hoi thu:
+4. Hoi thu:
 
 ```text
 Luat Phong chong ma tuy 2021 quy dinh nhung hinh thuc cai nghien nao?
@@ -158,10 +142,10 @@ Luat Phong chong ma tuy 2021 quy dinh nhung hinh thuc cai nghien nao?
 Bai bao ve ca si Long Nhat va Son Ngoc Minh de cap den viec gi?
 ```
 
-6. Chay evaluation:
+5. Chay evaluation:
 
 ```bash
-python group_project/evaluation/eval_pipeline.py
+uv run python lab_assignment/evaluation/eval_pipeline.py
 ```
 
 ## Luu y ky thuat
